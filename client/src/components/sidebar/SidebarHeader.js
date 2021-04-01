@@ -2,6 +2,10 @@ import React                    from 'react';
 import { WButton, WRow, WCol }  from 'wt-frontend';
 
 const SidebarHeader = (props) => {
+
+    // const clickDisabled = () => { };
+
+
     return (
         <WRow className='sidebar-header'>
             <WCol size="7">
@@ -16,12 +20,6 @@ const SidebarHeader = (props) => {
                         <WButton className="sidebar-buttons" onClick={props.createNewList} clickAnimation="ripple-light" shape="rounded" color="primary">
                             <i className="material-icons">add</i>
                         </WButton>
-                        <WButton className="sidebar-buttons undo-redo" onClick={props.undo} wType="texted" clickAnimation="ripple-light" shape="rounded">
-                            <i className="material-icons">undo</i>
-                        </WButton>
-                        <WButton className="sidebar-buttons undo-redo" onClick={props.redo} wType="texted" clickAnimation="ripple-light" shape="rounded">
-                            <i className="material-icons">redo</i>
-                        </WButton>
                     </div>
                 }
             </WCol>
@@ -30,5 +28,5 @@ const SidebarHeader = (props) => {
 
     );
 };
-
+// props.disabled ? clickDisabled :
 export default SidebarHeader;

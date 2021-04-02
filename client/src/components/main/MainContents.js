@@ -10,6 +10,7 @@ const MainContents = (props) => {
                 setShowDelete={props.setShowDelete} setActiveList={props.setActiveList}
                 undo={props.undo} redo={props.redo}
                 canRedo = {props.canRedo} canUndo = {props.canUndo} 
+                tps = {props.tps}
 />
             <TableContents
                 key={props.activeList.id} activeList={props.activeList}

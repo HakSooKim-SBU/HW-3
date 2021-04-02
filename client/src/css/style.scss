@@ -132,6 +132,11 @@ html, body {
     color: var(--light-gray);
 }
 
+.regular-header-button{
+    color: var(--light-gray);
+
+}
+
 
 
 .table-header {
@@ -194,4 +199,8 @@ html, body {
 .table-header-button-disabled {
     transition: 0.1s ease-in-out;
     color: var(--warm-black);
+}
+.regular-button-disabled{
+    color: var(--warm-black);
+    cursor: default;
 }

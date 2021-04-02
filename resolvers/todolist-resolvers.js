@@ -139,6 +139,7 @@ module.exports = {
 		**/
 		reorderItems: async (_, args) => {
 			const { _id, itemId, direction } = args;
+			console.log("HELLO WORLD");
 			const listId = new ObjectId(_id);
 			const found = await Todolist.findOne({_id: listId});
 			let listItems = found.items;
@@ -163,6 +164,27 @@ module.exports = {
 			listItems = found.items;
 			return (found.items);
 
+		},
+		sortByColumn: async (_,args) => {
+			const { _id, direction } = args;
+			const listId = new ObjectId(_id);
+			const found = await Todolist.findOne({_id: listId});
+			let listItems = found.items;
+
+			const newlistItems = listItems.map(item => item);
+
+			for (let i = 0; i < direction.length; i++) {
+				const index = listItems.findIndex(item => item.id === direction[i]);
+				console.log(index)
+
+				newlistItems[i] = listItems[index];
+			  }
+
+			const updated = await Todolist.updateOne({_id: listId}, { items: newlistItems })
+			if(updated) return (newlistItems);
+			// return old ordering if reorder was unsuccessful
+			listItems = found.items;
+			return (found.items); 
 		}
 
 	}

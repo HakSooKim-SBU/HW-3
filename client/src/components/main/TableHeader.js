@@ -11,16 +11,16 @@ const TableHeader = (props) => {
     const undoButtonStyle = (clickUndoDisabled) ? ' regular-button-disabled ' : 'regular-header-button ';
     const redoButtonStyle = (clickRedoDisabled) ? ' regular-button-disabled ' : 'regular-header-button ';
     
-    // const handleDateSorting = (e) => {
-    //     props.sortItems('due_date');
-    // };
+    const handleDateSorting = (e) => {
+        props.sortByColumn('due_date');
+    };
 
-    // const handleCompletedSorting = (e) => {
-    //     props.sortItems('completed');
-    // };
+    const handleCompletedSorting = (e) => {
+        props.sortByColumn('completed');
+    };
 
     const handleDescriptionSorting = (e) => {
-        props.sortItems('description');
+        props.sortByColumn('description');
     };
 
     const handleClose = () =>{
@@ -37,10 +37,10 @@ const TableHeader = (props) => {
                 <WButton className='table-header-section' onClick = {handleDescriptionSorting} wType="texted" >Task</WButton>
             </WCol>
             <WCol size="3">
-                <WButton className='table-header-section' wType="texted">Due Date</WButton>
+                <WButton className='table-header-section' onClick = {handleDateSorting} wType="texted">Due Date</WButton>
             </WCol>
             <WCol size="2">
-                <WButton className='table-header-section'  wType="texted" >Status</WButton>
+                <WButton className='table-header-section'  onClick = {handleCompletedSorting} wType="texted" >Status</WButton>
             </WCol>
 
             <WCol size="3" className="table-header-buttons">

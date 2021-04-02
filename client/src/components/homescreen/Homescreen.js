@@ -14,7 +14,8 @@ import { WLayout, WLHeader, WLMain, WLSide } from 'wt-frontend';
 import { UpdateListField_Transaction, 
 	UpdateListItems_Transaction, 
 	ReorderItems_Transaction, 
-	EditItem_Transaction } 				from '../../utils/jsTPS';
+	EditItem_Transaction ,
+	SortItems_Transaction} 				from '../../utils/jsTPS';
 import WInput from 'wt-frontend/build/components/winput/WInput';
 
 
@@ -26,6 +27,8 @@ const Homescreen = (props) => {
 	const [showLogin, toggleShowLogin] 		= useState(false);
 	const [showCreate, toggleShowCreate] 	= useState(false);
 
+	
+	const [SortByColumn] 		= useMutation(mutations.SORT_BY_COLUMN);
 	const [ReorderTodoItems] 		= useMutation(mutations.REORDER_ITEMS);
 	const [UpdateTodoItemField] 	= useMutation(mutations.UPDATE_ITEM_FIELD);
 	const [UpdateTodolistField] 	= useMutation(mutations.UPDATE_TODOLIST_FIELD);
@@ -134,6 +137,63 @@ const Homescreen = (props) => {
 
 	};
 
+	const sortByColumn = async (sortingCriteria) => {
+		let listID = activeList._id;
+		let oldItemsIds = [];
+    	let itemsToSort = [];
+		for (let i = 0; i < activeList.items.length; i++) {
+			let item = activeList.items[i];
+			oldItemsIds.push(item.id);
+			itemsToSort.push(item);
+		  }
+		let sortIncreasing = isInIncreasingOrder(itemsToSort, sortingCriteria);
+
+		let compareFunction = makeCompareFunction(sortingCriteria, sortIncreasing);
+		itemsToSort = itemsToSort.sort(compareFunction);
+		let newItemsIds = [];
+		for (let i = 0; i < itemsToSort.length; i++) {
+			let item = itemsToSort[i];
+			newItemsIds.push(item.id);
+		  }
+		console.log(typeof(newItemsIds[0]));
+		let transaction = new SortItems_Transaction (listID, oldItemsIds, newItemsIds, SortByColumn);
+		props.tps.addTransaction(transaction);
+		tpsRedo();
+	}
+
+const isInIncreasingOrder = (itemsToTest, sortingCriteria) => {
+	for (let i = 0; i < itemsToTest.length - 1; i++) {
+		let a = itemsToTest[i][sortingCriteria];
+		let b = itemsToTest[i + 1][sortingCriteria];
+		let c = a>b
+	  if (itemsToTest[i][sortingCriteria] > itemsToTest[i + 1][sortingCriteria]){
+		return false;
+	  }
+	}
+	return true;
+}
+
+const makeCompareFunction = (criteria, increasing) => {
+	return function (item1, item2) {
+	  let negate = 1;
+	  if (increasing) {
+		negate = -1;
+	  }
+	  let value1 = item1[criteria];
+	  let value2 = item2[criteria];
+	  if (value1 < value2) {
+		return -1 * negate;
+	  }
+	  else if (value1 === value2) {
+		return 0;
+	  }
+	  else {
+		return 1 * negate;
+	  }
+	}
+  }
+
+
 	const createNewList = async () => {
 		const length = todolists.length
 		const id = length >= 1 ? todolists[length - 1].id + Math.floor((Math.random() * 100) + 1) : 1;
@@ -241,6 +301,8 @@ const Homescreen = (props) => {
 									undo={tpsUndo} redo={tpsRedo}
 									canRedo = {canRedo} canUndo = {canUndo} 
 									tps = {props.tps}
+									sortByColumn = {sortByColumn}
+						
 								/>
 							</div>
 						:

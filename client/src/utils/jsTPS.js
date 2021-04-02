@@ -118,6 +118,26 @@ export class UpdateListItems_Transaction extends jsTPS_Transaction {
     }
 }
 
+export class SortItems_Transaction extends jsTPS_Transaction {
+    constructor(listID, initOldItemsOrder, initNewItemsOrder, callback) {
+        super();
+        this.listID = listID;
+		this.initOldItemsOrder = initOldItemsOrder;
+        this.initNewItemsOrder = initNewItemsOrder;
+		this.updateFunction = callback;
+	}
+    async doTransaction() {
+		const { data } = await this.updateFunction({ variables: { _id: this.listID, direction: this.initNewItemsOrder }});
+
+		return data;
+    }
+    // Since delete/add are opposites, flip matching opcode
+    async undoTransaction() {
+		const {data} = await this.updateFunction({ variables: { _id: this.listID, direction: this.initOldItemsOrder }});
+		return data;
+    }
+}
+
 
 
 

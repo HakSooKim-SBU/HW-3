@@ -15,7 +15,10 @@ module.exports = {
 			const _id = new ObjectId(req.userId);
 			if(!_id) { return([])};
 			const todolists = await Todolist.find({owner: _id});
+			todolists.sort((a, b) => (a.idx > b.idx) ? 1 : -1)
+
 			if(todolists) return (todolists);
+
 
 		},
 		/** 
@@ -47,7 +50,8 @@ module.exports = {
 			
 			const updated = await Todolist.updateOne({_id: listId}, { items: listItems });
 
-			if(updated) return (objectId);
+			if(item._id === '') 
+			item._id = objectId;
 			else return ('Could not add item');
 		},
 		/** 
@@ -57,13 +61,14 @@ module.exports = {
 		addTodolist: async (_, args) => {
 			const { todolist } = args;
 			const objectId = new ObjectId();
-			const { id, name, owner, items } = todolist;
+			const { id, name, owner, items, idx } = todolist;
 			const newList = new Todolist({
 				_id: objectId,
 				id: id,
 				name: name,
 				owner: owner,
-				items: items
+				items: items,
+				idx: idx
 			});
 			const updated = newList.save();
 			if(updated) return objectId;
@@ -176,7 +181,6 @@ module.exports = {
 			for (let i = 0; i < direction.length; i++) {
 				const index = listItems.findIndex(item => item.id === direction[i]);
 				console.log(index)
-
 				newlistItems[i] = listItems[index];
 			  }
 
@@ -185,7 +189,39 @@ module.exports = {
 			// return old ordering if reorder was unsuccessful
 			listItems = found.items;
 			return (found.items); 
+
+		},
+		changeTodolistsIdx: async (_,args) => {
+			const {new_id} = args;
+			let foundNew ;
+			const cureentListId = new ObjectId(new_id);
+			const foundCurrent = await Todolist.findOne({_id: cureentListId});
+			let owner = await Todolist.find({owner: foundCurrent.owner});
+			for (let i = 0; i< owner.length; i++){
+				if (owner[i].idx < 0){
+				foundNew = await Todolist.updateOne({_id: owner[i]._id},{ idx: owner[i].idx * -1 } );
+				}
+			}
+			const newUpdated = await Todolist.updateOne({_id: foundCurrent._id}, { idx: foundCurrent.idx * -1 })
+
+
+			
+			// const foundCurrent.owner
+			// let currentListIdx = foundCurrent.idx
+
+			// const newListId = new ObjectId(new_id);
+			// const foundNew = await Todolist.findOne({_id: newListId});
+			// let newListIdx = foundNew.idx;
+
+			// currentListIdx = currentListIdx * -1;
+			// newListIdx = newListIdx * -1;
+
+			// const newUpdated = await Todolist.updateOne({_id: newListId}, { idx: newListIdx })
+
+			// return currentUpdated & newUpdated ;
+			return foundNew & newUpdated;
 		}
+
 
 	}
 }

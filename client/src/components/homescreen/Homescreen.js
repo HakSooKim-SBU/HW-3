@@ -28,6 +28,8 @@ const Homescreen = (props) => {
 	const [showCreate, toggleShowCreate] 	= useState(false);
 
 	
+	const [ChangeTodolistsIdx] 		= useMutation(mutations.CHANGE_TODOLISTS_IDX);
+
 	const [SortByColumn] 		= useMutation(mutations.SORT_BY_COLUMN);
 	const [ReorderTodoItems] 		= useMutation(mutations.REORDER_ITEMS);
 	const [UpdateTodoItemField] 	= useMutation(mutations.UPDATE_ITEM_FIELD);
@@ -41,7 +43,8 @@ const Homescreen = (props) => {
 	const { loading, error, data, refetch } = useQuery(GET_DB_TODOS);
 	if(loading) { console.log(loading, 'loading'); }
 	if(error) { console.log(error, 'error'); }
-	if(data) { todolists = data.getAllTodos; }
+	if(data) { 
+		todolists = data.getAllTodos; }
 
 	const auth = props.user === null ? false : true;
 
@@ -52,7 +55,7 @@ const Homescreen = (props) => {
 			if (activeList._id) {
 				let tempID = activeList._id;
 				let list = todolists.find(list => list._id === tempID);
-				setActiveList(list);
+				await setActiveList(list);
 			}
 		}
 	}
@@ -197,15 +200,19 @@ const makeCompareFunction = (criteria, increasing) => {
 	const createNewList = async () => {
 		const length = todolists.length
 		const id = length >= 1 ? todolists[length - 1].id + Math.floor((Math.random() * 100) + 1) : 1;
+		// const newIndex  = 0
+		let biggestIndex = Math.max.apply(Math, todolists.map(function(lists) { return lists.idx; }))
+		const newIndex = length>= 1? biggestIndex + 1 : 1;
 		let list = {
 			_id: '',
 			id: id,
 			name: 'Untitled',
 			owner: props.user._id,
 			items: [],
+			idx: newIndex
 		}
 		const { data } = await AddTodolist({ variables: { todolist: list }, refetchQueries: [{ query: GET_DB_TODOS }] });
-		setActiveList(list)
+		refetch();
 		props.tps.clearAllTransactions();
 
 	};
@@ -225,10 +232,19 @@ const makeCompareFunction = (criteria, increasing) => {
 
 	};
 
-	const handleSetActive = (id) => {
+	const updateListsIndex = async (id) =>{
+		const todo = todolists.find(todo => todo.id === id || todo._id === id);
+		await ChangeTodolistsIdx({ variables: {new_id: todo._id }});
+		refetch();
+	}
+
+	const handleSetActive = async (id) => {
+		updateListsIndex(id)
 		const todo = todolists.find(todo => todo.id === id || todo._id === id);
 		setActiveList(todo);
+
 		props.tps.clearAllTransactions();
+		
 
 	};
 

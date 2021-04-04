@@ -55,7 +55,7 @@ const Homescreen = (props) => {
 			if (activeList._id) {
 				let tempID = activeList._id;
 				let list = todolists.find(list => list._id === tempID);
-				await setActiveList(list);
+				setActiveList(list);
 			}
 		}
 	}
@@ -72,12 +72,13 @@ const Homescreen = (props) => {
 		return retVal;
 	}
 
-	const canUndo = () => {
-		return props.tps.hasTransactionToUndo();
+	const canUndo =  () => {
+		console.log(props.tps.hasTransactionToUndo() + "HELLOHELLO");
+		return  props.tps.hasTransactionToUndo();
 	  }
 
-	const canRedo = () => {
-		return props.tps.hasTransactionToRedo();
+	const canRedo =  () => {
+		return  props.tps.hasTransactionToRedo();
 	}
 
 
@@ -105,7 +106,7 @@ const Homescreen = (props) => {
 	};
 
 
-	const deleteItem = async (item) => {
+	const deleteItem = async (item, index) => { 
 		let listID = activeList._id;
 		let itemID = item._id;
 		let opcode = 0;
@@ -117,7 +118,7 @@ const Homescreen = (props) => {
 			assigned_to: item.assigned_to,
 			completed: item.completed
 		}
-		let transaction = new UpdateListItems_Transaction(listID, itemID, itemToDelete, opcode, AddTodoItem, DeleteTodoItem);
+		let transaction = new UpdateListItems_Transaction(listID, itemID, itemToDelete, opcode, AddTodoItem, DeleteTodoItem, index);
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 	};
@@ -248,7 +249,6 @@ const makeCompareFunction = (criteria, increasing) => {
 
 	};
 
-	
 	/*
 		Since we only have 3 modals, this sort of hardcoding isnt an issue, if there
 		were more it would probably make sense to make a general modal component, and

@@ -60,6 +60,7 @@ const Homescreen = (props) => {
 		}
 	}
 
+	
 	const tpsUndo = async () => {
 		const retVal = await props.tps.undoTransaction();
 		refetchTodos(refetch);
@@ -79,6 +80,15 @@ const Homescreen = (props) => {
 
 	const canRedo =  () => {
 		return  props.tps.hasTransactionToRedo();
+	}
+
+	const checkActiveList = () => {
+		if (activeList._id){
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 
@@ -298,7 +308,7 @@ const makeCompareFunction = (criteria, increasing) => {
 							<SidebarContents
 								todolists={todolists} activeid={activeList.id} auth={auth}
 								handleSetActive={handleSetActive} createNewList={createNewList}
-								updateListField={updateListField}
+								updateListField={updateListField}	checkActiveList = {checkActiveList}
 							/>
 							:
 							<></>

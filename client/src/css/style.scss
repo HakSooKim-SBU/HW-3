@@ -71,6 +71,7 @@ html, body {
 
 .list-item-active {
     background-color: var(--deep-blue);
+    color: var(--light-orange);
 }
 
 .list-item {
@@ -145,6 +146,12 @@ html, body {
 
 }
 
+.table-entry-buttons:hover, .table-header-button:hover, .regular-header-button:hover,.table-header-section:hover {
+    transition: 0.1s ease-in-out;
+    cursor: pointer;
+    color: #FFDEAD;
+}
+
 
 
 .table-header {
@@ -155,13 +162,27 @@ html, body {
     font-size: 1.375rem;
     font-weight: bold;
     color: $text-color;
+    color: var(--light-gray);
 }
 
-.table-header-section:hover {
-    transition: 0.1s ease-in-out;
-    cursor: pointer;
-    background-color: var(--deep-blue-lighter);
+.conditional-hover:hover{
+    font-size: 1.375rem;
+    font-weight: bold;
+    color: $text-color;
+    color: var(--light-gray);
+    cursor: default;
 }
+
+.table-text:hover{
+    transition: 0.1s ease-in-out;
+    background-color:     #f9f7f133;
+}
+
+// .table-header-section:hover {
+//     transition: 0.1s ease-in-out;
+//     cursor: pointer;
+//     background-color: var(--deep-blue-lighter);
+// }
 
 .table-input {
     /*background-color: var(--deep-blue-lighter);
@@ -204,11 +225,34 @@ html, body {
     color: $text-color;
 }
 
+.wbutton.primary:hover{
+    transition: 0.1s ease-in-out;
+    cursor: pointer;
+    background-color: rgb(255, 230, 0);
+}
+
 .table-header-button-disabled {
     transition: 0.1s ease-in-out;
     color: var(--warm-black);
 }
 .regular-button-disabled{
-    color: var(--warm-black);
+    color: var(--warm-black) ;
     cursor: default;
 }
+
+.regular-button-disabled:hover{
+    color: var(--warm-black) ;
+    cursor: default;
+
+}
+
+.addList-button-disabled{
+    background-color:  #40454e !important;
+    cursor: default;
+    
+}
+.addList-button-disabled:hover{
+    cursor: default !important;
+    
+}
+

@@ -15,6 +15,10 @@ const TableHeader = (props) => {
         props.sortByColumn('due_date');
     };
 
+    const handleAssignedToSorting = (e) => {
+        props.sortByColumn('assigned_to');
+    };
+
     const handleCompletedSorting = (e) => {
         props.sortByColumn('completed');
     };
@@ -33,27 +37,26 @@ const TableHeader = (props) => {
 
     return (
         <WRow className="table-header">
-            <WCol size="4">
+            <WCol size="3">
                 <WButton className='table-header-section' onClick = {handleDescriptionSorting} wType="texted" >Task</WButton>
             </WCol>
-            <WCol size="3">
+            <WCol size="2">
+                <WButton className='table-header-section'  onClick = {handleAssignedToSorting} wType="texted" >Assigned To</WButton>
+            </WCol>
+            <WCol size="2">
                 <WButton className='table-header-section' onClick = {handleDateSorting} wType="texted">Due Date</WButton>
             </WCol>
             <WCol size="2">
                 <WButton className='table-header-section'  onClick = {handleCompletedSorting} wType="texted" >Status</WButton>
             </WCol>
-
+            
             <WCol size="3" className="table-header-buttons">
-                <WRow size="5" >
-                    <WButton  onClick={ (props.disabled && clickUndoDisabled) ? clickDisabled : props.undo} wType="texted" shape="rounded" className={`${undoButtonStyle}`} >
+                <WButton  onClick={ (props.disabled && clickUndoDisabled) ? clickDisabled : props.undo} wType="texted" shape="rounded" className={`${undoButtonStyle}`} >
                         <i className="material-icons">undo</i>
                     </WButton>
                     <WButton  onClick={(props.disabled && clickRedoDisabled)? clickDisabled : props.redo} wType="texted"  shape="rounded" className={`${redoButtonStyle}`} >
                         <i className="material-icons">redo</i>
                     </WButton>
-                </WRow>
-
-                <WRow size="7" >
                     <WButton onClick={props.disabled ? clickDisabled : props.addItem} wType="texted" className={`${buttonStyle}`}>
                         <i className="material-icons">add_box</i>
                     </WButton>
@@ -63,7 +66,6 @@ const TableHeader = (props) => {
                     <WButton onClick={props.disabled ? clickDisabled : handleClose} wType="texted" className={`${buttonStyle}`}>
                         <i className="material-icons">close</i>
                     </WButton>
-                </WRow>
 
             </WCol>
 

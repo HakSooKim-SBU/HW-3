@@ -61,6 +61,14 @@ html, body {
     color: $primary-color;
 }
 
+.assigned-complete-task {
+    color: black;
+}
+
+.assigned-incomplete-task {
+    color: tomato;
+}
+
 .list-item-active {
     background-color: var(--deep-blue);
 }

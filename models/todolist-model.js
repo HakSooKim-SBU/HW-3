@@ -20,8 +20,8 @@ const todolistSchema = new Schema(
 			required: true
 		},
 		items: [Item],
-		idx: {
-			type: Number,
+		top: {
+			type: Boolean,
 			// required: true
 		}
 	},

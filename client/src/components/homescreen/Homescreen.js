@@ -28,7 +28,7 @@ const Homescreen = (props) => {
 	const [showCreate, toggleShowCreate] 	= useState(false);
 
 	
-	const [ChangeTodolistsIdx] 		= useMutation(mutations.CHANGE_TODOLISTS_IDX);
+	const [ChangeTodolistsTop] 		= useMutation(mutations.CHANGE_TODOLISTS_TOP);
 
 	const [SortByColumn] 		= useMutation(mutations.SORT_BY_COLUMN);
 	const [ReorderTodoItems] 		= useMutation(mutations.REORDER_ITEMS);
@@ -48,6 +48,12 @@ const Homescreen = (props) => {
 
 	const auth = props.user === null ? false : true;
 
+
+
+
+
+
+
 	const refetchTodos = async (refetch) => {
 		const { loading, error, data } = await refetch();
 		if (data) {
@@ -55,7 +61,7 @@ const Homescreen = (props) => {
 			if (activeList._id) {
 				let tempID = activeList._id;
 				let list = todolists.find(list => list._id === tempID);
-				setActiveList(list);
+				handleSetActive(list._id);
 			}
 		}
 	}
@@ -139,6 +145,7 @@ const Homescreen = (props) => {
 		let listID = activeList._id;
 		let transaction = new EditItem_Transaction(listID, itemID, field, prev, value, flag, UpdateTodoItemField);
 		props.tps.addTransaction(transaction);
+		// await refetchTodos(refetch);
 		tpsRedo();
 
 	};
@@ -212,18 +219,24 @@ const makeCompareFunction = (criteria, increasing) => {
 		const length = todolists.length
 		const id = length >= 1 ? todolists[length - 1].id + Math.floor((Math.random() * 100) + 1) : 1;
 		// const newIndex  = 0
-		let biggestIndex = Math.max.apply(Math, todolists.map(function(lists) { return lists.idx; }))
-		const newIndex = length>= 1? biggestIndex + 1 : 1;
+		// let biggestIndex = Math.max.apply(Math, todolists.map(function(lists) { return lists.idx; }))
+		// const newIndex = length>= 1? biggestIndex + 1 : 1;
 		let list = {
 			_id: '',
 			id: id,
 			name: 'Untitled',
 			owner: props.user._id,
 			items: [],
-			idx: newIndex
+			top: false
 		}
 		const { data } = await AddTodolist({ variables: { todolist: list }, refetchQueries: [{ query: GET_DB_TODOS }] });
-		refetch();
+		// refetch();
+		await refetchTodos(refetch);
+  		if(data) {
+   		let _id = data.addTodolist;
+   		let newList = todolists.find(list => list._id === _id);
+   		handleSetActive(newList.id)
+  		} 
 		props.tps.clearAllTransactions();
 
 	};
@@ -240,23 +253,19 @@ const makeCompareFunction = (criteria, increasing) => {
 		let transaction = new UpdateListField_Transaction(_id, field, prev, value, UpdateTodolistField);
 		props.tps.addTransaction(transaction);
 		tpsRedo();
-
 	};
 
 	const updateListsIndex = async (id) =>{
 		const todo = todolists.find(todo => todo.id === id || todo._id === id);
-		await ChangeTodolistsIdx({ variables: {new_id: todo._id }});
-		refetch();
+		await ChangeTodolistsTop({ variables: {new_id: todo._id },refetchQueries: [{ query: GET_DB_TODOS }] });
+		// refetch();
 	}
 
 	const handleSetActive = async (id) => {
 		updateListsIndex(id)
 		const todo = todolists.find(todo => todo.id === id || todo._id === id);
 		setActiveList(todo);
-
 		props.tps.clearAllTransactions();
-		
-
 	};
 
 	/*

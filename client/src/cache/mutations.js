@@ -105,8 +105,8 @@ export const SORT_BY_COLUMN = gql`
 }
 `;
 
-export const CHANGE_TODOLISTS_IDX = gql`
-	mutation ChangeTodolistsIdx($new_id: String) {
-		changeTodolistsIdx(new_id: $new_id)	
+export const CHANGE_TODOLISTS_TOP = gql`
+	mutation ChangeTodolistsTop($new_id: String) {
+		changeTodolistsTop(new_id: $new_id)	
 	}
 `;

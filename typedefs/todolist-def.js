@@ -8,7 +8,7 @@ const typeDefs = gql `
 		name: String!
 		owner: String!
 		items: [Item]
-		idx: Int!
+		top: Boolean
 	}
 	type Item {
 		_id: String!
@@ -31,7 +31,7 @@ const typeDefs = gql `
 		updateItemField(itemId: String!, _id: String!, field: String!, value: String!, flag: Int!): [Item]
 		reorderItems(itemId: String!, _id: String!, direction: Int!): [Item]
 		sortByColumn(_id: String!, direction: [Int]): [Item]
-		changeTodolistsIdx(new_id: String): Boolean
+		changeTodolistsTop(new_id: String): Boolean
 	}
 	input FieldInput {
 		_id: String
@@ -44,7 +44,7 @@ const typeDefs = gql `
 		name: String
 		owner: String
 		items: [ItemInput]
-		idx: Int
+		top: Boolean
 
 	}
 	input ItemInput {

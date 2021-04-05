@@ -9,7 +9,7 @@ const MainContents = (props) => {
                 disabled={!props.activeList._id} addItem={props.addItem}
                 setShowDelete={props.setShowDelete} setActiveList={props.setActiveList}
                 undo={props.undo} redo={props.redo} 
-                canRedo = {props.canRedo} canUndo = {props.canUndo} 
+                hasRedo = {props.hasRedo} hasUndo = {props.hasUndo} 
                 tps = {props.tps}   sortByColumn = {props.sortByColumn}
 />
             <TableContents

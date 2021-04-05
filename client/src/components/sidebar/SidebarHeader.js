@@ -18,7 +18,7 @@ const SidebarHeader = (props) => {
                     props.auth && <div className="sidebar-options">
                         <WButton className={!props.checkActiveList() ? "sidebar-buttons" : "sidebar-buttons addList-button-disabled " } 
                             onClick={!props.checkActiveList()?props.createNewList:clickDisabled} 
-                            clickAnimation= {!props.checkActiveList()? " ripple-light ": " "} shape="rounded" color="primary" >
+                            clickAnimation= {!props.checkActiveList() ? " ripple-light ": " "} shape="rounded" color="primary" >
                                 <i className="material-icons">add</i>
                         </WButton>
                     </div>

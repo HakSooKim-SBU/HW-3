@@ -4,8 +4,8 @@ import { WButton, WRow, WCol } from 'wt-frontend';
 
 const TableHeader = (props) => {
     const clickDisabled = () => { };
-    const clickUndoDisabled = !props.canUndo();
-    const clickRedoDisabled = !props.canRedo(); 
+    const clickUndoDisabled = !props.hasUndo;
+    const clickRedoDisabled = !props.hasRedo; 
 
     const headerSectionStyle = props.disabled ? ' conditional-hover ' : ' ';
     const buttonStyle = props.disabled ? ' table-header-button-disabled ' : 'table-header-button ';

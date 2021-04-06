@@ -70,7 +70,9 @@ module.exports = {
 				top: top
 			
 			});
-			const updated = newList.save();
+			const updated = await newList.save();
+			// const updated = newList.save();
+
 			if(updated) return objectId;
 			else return ('Could not add todolist');
 		},

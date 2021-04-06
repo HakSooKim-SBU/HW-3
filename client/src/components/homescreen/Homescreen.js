@@ -24,16 +24,10 @@ const Homescreen = (props) => {
 	const [showDelete, toggleShowDelete] 	= useState(false);
 	const [showLogin, toggleShowLogin] 		= useState(false);
 	const [showCreate, toggleShowCreate] 	= useState(false);
-
 	const [hasUndo, toggleHasUndo] 	= useState(false);
 	const [hasRedo, toggleHasRedo] 	= useState(false);
 
-
-	
-
-	
 	const [ChangeTodolistsTop] 		= useMutation(mutations.CHANGE_TODOLISTS_TOP);
-
 	const [SortByColumn] 			= useMutation(mutations.SORT_BY_COLUMN);
 	const [ReorderTodoItems] 		= useMutation(mutations.REORDER_ITEMS);
 	const [UpdateTodoItemField] 	= useMutation(mutations.UPDATE_ITEM_FIELD);
@@ -52,32 +46,14 @@ const Homescreen = (props) => {
 
 	const auth = props.user === null ? false : true;
 
-	// const keyPressHandler = async () => {
-		window.onkeydown = async (event) => {
-			// alert("hey")
-			if((event.key === "z" || event.key ==="Z") && event.ctrlKey){
-				tpsRedo();
-			}
-			else if((event.key === "y" || event.key ==="Y") && event.ctrlKey){
-				tpsRedo();
-			}
+	window.onkeydown = async (event) => {
+		if((event.key === "z" || event.key ==="Z") && event.ctrlKey){
+			tpsUndo();
 		}
-	// }
-
-
-
-
-	// const refetchTodos = async (refetch) => {
-	// 	const { loading, error, data } = await refetch();
-	// 	if (data) {
-	// 		todolists = data.getAllTodos;
-	// 		if (activeList._id) {
-	// 			let tempID = activeList._id;
-	// 			let list = todolists.find(list => list._id === tempID);
-	// 			setActiveList(list);
-	// 		}
-	// 	}
-	// }
+		if((event.key === "y" || event.key ==="Y") && event.ctrlKey){
+			tpsRedo();
+		}
+	}
 
 	const refetchTodos = async (refetch) => {
 		const { loading, error, data } = await refetch();
@@ -254,16 +230,20 @@ const makeCompareFunction = (criteria, increasing) => {
   		// if(data) {
    		// let _id = data.addTodolist;
    		// let newList = todolists.find(list => list._id === _id);
-   		// handleSetActive(newList.id)
-		// //    setActiveList(newList); 
+		// //    if (newList){
+		// handleSetActive(newList.id)
+		// // }
+   		// // handleSetActive(newList.id)
+		// ////    setActiveList(newList); 
   		// } 
 		const refetched = await refetchTodos(refetch);
 		if(refetched && data) {
 		let _id = data.addTodolist;
+		
 		let newList = todolists.find(list => list._id === _id);
 		handleSetActive(newList.id)
 		}
-
+		
 		props.tps.clearAllTransactions();
 		toggleHasRedo(props.tps.hasTransactionToRedo());
 		toggleHasUndo(props.tps.hasTransactionToUndo());

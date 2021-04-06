@@ -215,7 +215,7 @@ export class jsTPS {
 			retVal = await transaction.doTransaction();
 			this.mostRecentTransaction++;
 			this.performingDo = false;
-            
+            console.log("successfuly")
         }
         console.log('transactions: ' + this.getSize());
         console.log('redo transactions:' + this.getRedoSize());
@@ -266,6 +266,8 @@ export class jsTPS {
 			retVal = await transaction.undoTransaction();
             this.mostRecentTransaction--;
 			this.performingUndo = false;
+            console.log("successfuly")
+
         }
         console.log('transactions: ' + this.getSize());
         console.log('redo transactions:' + this.getRedoSize());

@@ -11,10 +11,8 @@ import * as mutations 					from '../../cache/mutations';
 import { useMutation, useQuery } 		from '@apollo/client';
 import { WNavbar, WSidebar, WNavItem } 	from 'wt-frontend';
 import { WLayout, WLHeader, WLMain, WLSide } from 'wt-frontend';
-import { UpdateListField_Transaction, 
-	UpdateListItems_Transaction, 
-	ReorderItems_Transaction, 
-	EditItem_Transaction ,
+import { UpdateListField_Transaction, UpdateListItems_Transaction, 
+	ReorderItems_Transaction, EditItem_Transaction ,
 	SortItems_Transaction} 				from '../../utils/jsTPS';
 import WInput from 'wt-frontend/build/components/winput/WInput';
 
@@ -30,9 +28,6 @@ const Homescreen = (props) => {
 	const [hasUndo, toggleHasUndo] 	= useState(false);
 	const [hasRedo, toggleHasRedo] 	= useState(false);
 
-	// const isControlPressed = useKeyPress({ key: "Control" })
-	// const isZPressed = useKeyPress({ key: "z" })
-	// const isYwoPressed = useKeyPress({ key: "y" })
 
 	
 
@@ -57,44 +52,46 @@ const Homescreen = (props) => {
 
 	const auth = props.user === null ? false : true;
 
-	// useEffect(() => {
-	// 	const handleEsc = (event) => {
-	// 	   if (event.keyCode === 27 && event.ctrlKey) {
-	// 		tpsUndo()
-	// 		alert()
-	// 	  }
-	// 	};
-	// 	window.addEventListener('keydown', handleEsc);
-	
-	// 	return () => {
-	// 	  window.removeEventListener('keydown', handleEsc);
-	// 	};
-	//   }, []);
+	// const keyPressHandler = async () => {
+		window.onkeydown = async (event) => {
+			// alert("hey")
+			if((event.key === "z" || event.key ==="Z") && event.ctrlKey){
+				tpsRedo();
+			}
+			else if((event.key === "y" || event.key ==="Y") && event.ctrlKey){
+				tpsRedo();
+			}
+		}
+	// }
 
-	// const b = document.addEventListener('keydown', event => {
-	// 	if((event.key === "z" || event.key ==="Z") && event.ctrlKey){
-	// 		tpsUndo()			
+
+
+
+	// const refetchTodos = async (refetch) => {
+	// 	const { loading, error, data } = await refetch();
+	// 	if (data) {
+	// 		todolists = data.getAllTodos;
+	// 		if (activeList._id) {
+	// 			let tempID = activeList._id;
+	// 			let list = todolists.find(list => list._id === tempID);
+	// 			setActiveList(list);
+	// 		}
 	// 	}
-	// 	else if((event.key === "y" || event.key ==="Y") && event.ctrlKey){
-	// 		tpsRedo()			
-
-	// 	}
-	// })
-
-
-
+	// }
 
 	const refetchTodos = async (refetch) => {
 		const { loading, error, data } = await refetch();
 		if (data) {
-			todolists = data.getAllTodos;
-			if (activeList._id) {
-				let tempID = activeList._id;
-				let list = todolists.find(list => list._id === tempID);
-				setActiveList(list);
-			}
+		 todolists = data.getAllTodos;
+		 if (activeList._id) {
+		  let tempID = activeList._id;
+		  let list = todolists.find(list => list._id === tempID);
+		  setActiveList(list);
+		 }
+		 return true
 		}
-	}
+		else return false;
+	   }
 
 	
 	const tpsUndo = async () => {
@@ -110,18 +107,8 @@ const Homescreen = (props) => {
 		refetchTodos(refetch);
 		toggleHasRedo(props.tps.hasTransactionToRedo());
 		toggleHasUndo(props.tps.hasTransactionToUndo());
-
 		return retVal;
 	}
-
-	// const canUndo =  () => {
-	// 	// console.log(props.tps.hasTransactionToUndo() + "HELLOHELLO");
-	// 	return  props.tps.hasTransactionToUndo();
-	//   }
-
-	// const canRedo =  () => {
-	// 	return  props.tps.hasTransactionToRedo();
-	// }
 
 	const checkActiveList = () => {
 		if (activeList._id){
@@ -139,10 +126,11 @@ const Homescreen = (props) => {
 	const addItem = async () => {
 		let list = activeList;
 		const items = list.items;
-		const lastID = items.length >= 1 ? items[items.length - 1].id + 1 : 0;
+		const maxId = Math.max.apply(Math, items.map(function(item) { return item.id; }))
+		const newID = items.length >= 1 ? maxId + 1 : 0;
 		const newItem = {
 			_id: '',
-			id: lastID,
+			id: newID,
 			description: 'No Description',
 			due_date: 'No Date',
 			assigned_to: "Not Assigned",
@@ -202,7 +190,6 @@ const Homescreen = (props) => {
 			itemsToSort.push(item);
 		  }
 		let sortIncreasing = isInIncreasingOrder(itemsToSort, sortingCriteria);
-
 		let compareFunction = makeCompareFunction(sortingCriteria, sortIncreasing);
 		itemsToSort = itemsToSort.sort(compareFunction);
 		let newItemsIds = [];
@@ -251,11 +238,11 @@ const makeCompareFunction = (criteria, increasing) => {
 
 	const createNewList = async () => {
 		const length = todolists.length
-		const id = length >= 1 ? todolists[length - 1].id + Math.floor((Math.random() * 100) + 1) : 1;
-
+		const maxId = Math.max.apply(Math, todolists.map(function(todolist) { return todolist.id; }))
+		const newId = length >= 1 ? maxId + 1 : 0;
 		let list = {
 			_id: '',
-			id: id,
+			id: newId,
 			name: 'Untitled',
 			owner: props.user._id,
 			items: [],
@@ -263,14 +250,23 @@ const makeCompareFunction = (criteria, increasing) => {
 		}
 		const { data } = await AddTodolist({ variables: { todolist: list }, refetchQueries: [{ query: GET_DB_TODOS }] });
 		// refetch();
-		await refetchTodos(refetch);
-  		if(data) {
-   		let _id = data.addTodolist;
-   		let newList = todolists.find(list => list._id === _id);
-   		handleSetActive(newList.id)
-		//    setActiveList(newList); 
-  		} 
+		// await refetchTodos(refetch);
+  		// if(data) {
+   		// let _id = data.addTodolist;
+   		// let newList = todolists.find(list => list._id === _id);
+   		// handleSetActive(newList.id)
+		// //    setActiveList(newList); 
+  		// } 
+		const refetched = await refetchTodos(refetch);
+		if(refetched && data) {
+		let _id = data.addTodolist;
+		let newList = todolists.find(list => list._id === _id);
+		handleSetActive(newList.id)
+		}
+
 		props.tps.clearAllTransactions();
+		toggleHasRedo(props.tps.hasTransactionToRedo());
+		toggleHasUndo(props.tps.hasTransactionToUndo());
 
 	};
 
@@ -279,6 +275,8 @@ const makeCompareFunction = (criteria, increasing) => {
 		refetch();
 		setActiveList({});
 		props.tps.clearAllTransactions();
+		toggleHasRedo(props.tps.hasTransactionToRedo());
+		toggleHasUndo(props.tps.hasTransactionToUndo());
 
 	};
 
@@ -299,6 +297,8 @@ const makeCompareFunction = (criteria, increasing) => {
 		const todo = todolists.find(todo => todo.id === id || todo._id === id);
 		setActiveList(todo);
 		props.tps.clearAllTransactions();
+		toggleHasRedo(props.tps.hasTransactionToRedo());
+		toggleHasUndo(props.tps.hasTransactionToUndo());
 	};
 
 	/*
@@ -370,7 +370,8 @@ const makeCompareFunction = (criteria, increasing) => {
 									hasRedo = {hasRedo} hasUndo = {hasUndo} 
 									tps = {props.tps}
 									sortByColumn = {sortByColumn}
-						
+									toggleHasRedo = {toggleHasRedo}
+									toggleHasUndo = {toggleHasUndo}
 								/>
 							</div>
 						:

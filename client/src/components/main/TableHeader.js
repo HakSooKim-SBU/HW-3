@@ -31,14 +31,13 @@ const TableHeader = (props) => {
     const handleClose = () =>{
 		props.tps.clearAllTransactions();
         props.setActiveList({})
+        props.toggleHasRedo(props.tps.hasTransactionToRedo());
+        props.toggleHasUndo(props.tps.hasTransactionToUndo());
     }
 
     const isEmpty = () =>{
         return (props.activeList.items.length === 0)
     }
-   
-
-
 
     return (
         <WRow className="table-header">
